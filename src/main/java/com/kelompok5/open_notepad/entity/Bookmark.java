@@ -2,13 +2,13 @@ package com.kelompok5.open_notepad.entity;
 
 import java.sql.Date;
 
-
 public class Bookmark {
     private String userID;
     private String moduleID;
     private Date dateBookmarked;
 
-    public void create(String userID, String moduleID) {
+    // Constructor langsung dengan set waktu
+    public Bookmark(String userID, String moduleID) {
         this.userID = userID;
         this.moduleID = moduleID;
         this.dateBookmarked = new Date(System.currentTimeMillis());
@@ -26,5 +26,4 @@ public class Bookmark {
     public Date getDateBookmarked() {
         return dateBookmarked;
     }
-
 }

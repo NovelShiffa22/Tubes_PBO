@@ -19,6 +19,10 @@ public class NoteDAO {
 
     private List<Map<String, Object>> cachedNotes = null;
 
+    public void clearCache() {
+        cachedNotes = null;
+    }
+
     public List<Map<String, Object>> getAllnotes() {
         if (cachedNotes != null) {
             return cachedNotes; // Return cached data
@@ -93,10 +97,8 @@ public class NoteDAO {
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload note data to the database");
         }
-        // upload note to database logic
     }
 
-    // update note in database
     public void updateToDatabase(Note note) {
         String sql = "UPDATE Notes SET name = ?, description = ?, course = ?, major = ? WHERE moduleID = ?";
         // Querry to update note
@@ -110,10 +112,12 @@ public class NoteDAO {
     }
 
     public Note getFromDatabase(int noteID) {
-        String sql = "SELECT * FROM Files INNER JOIN Notes ON Files.fileID = Notes.fileID WHERE moduleID = ?";
-        // Querry to get note by ID
+        // Beri alias pada kolom name dari Notes dan Files
+        String sql = "SELECT Notes.*, Files.fileID, Files.name AS file_name, Files.type, Files.size, Files.path " +
+                "FROM Files INNER JOIN Notes ON Files.fileID = Notes.fileID " +
+                "WHERE Notes.moduleID = ?";
+
         Note noted;
-        System.out.println("Retrieving note with ID: " + noteID);
         try {
             noted = jdbcTemplate.queryForObject(sql, new Object[] { noteID }, (rs, rowNum) -> {
                 Note note = new Note();
@@ -127,7 +131,7 @@ public class NoteDAO {
                 note.setVisibility(rs.getBoolean("visibility"));
                 note.setFile(new File(
                         rs.getInt("fileID"),
-                        rs.getString("name"),
+                        rs.getString("file_name"),
                         rs.getString("type"),
                         rs.getLong("size"),
                         rs.getString("path")));
@@ -257,4 +261,5 @@ public class NoteDAO {
             throw new RuntimeException("Failed to filter notes: " + e.getMessage());
         }
     }
+
 }

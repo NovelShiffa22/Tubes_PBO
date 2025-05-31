@@ -16,6 +16,7 @@ public class OpenNotepadApplication {
 	private JdbcTemplate jdbcTemplate;
 
 	public static void main(String[] args) {
+	
 		io.github.cdimascio.dotenv.Dotenv dotenv = io.github.cdimascio.dotenv.Dotenv.load();
         System.setProperty("SQLusername", dotenv.get("SQLusername"));
         System.setProperty("SQLpassword", dotenv.get("SQLpassword"));

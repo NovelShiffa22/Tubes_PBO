@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Introduction to OOP</title>
@@ -11,59 +12,60 @@
             font-size: 1.5rem;
             transition: color 0.2s ease;
         }
-        
+
         .star-rating i:hover {
             color: #FCD34D !important;
         }
-        
+
         .notification {
             animation: slideIn 0.3s ease-out;
         }
-        
+
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
-        
+
         .bookmark-button {
             transition: all 0.3s ease;
         }
-        
+
         .bookmark-button.bookmarked {
             background-color: #10B981;
             color: white;
         }
-        
+
         .pdf-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .judul {
             text-align: center;
             margin-bottom: 20px;
         }
-        
+
         .line {
             height: 2px;
             background-color: #e5e7eb;
             margin: 20px 0;
         }
-        
+
         iframe {
             width: 100%;
             height: 600px;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
         }
-        
+
         .star {
             text-align: center;
             margin-top: 30px;
@@ -73,6 +75,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <header class="fixed shadow-lg flex top-0 bg-ijomuda w-full justify-between z-30">
@@ -89,13 +92,16 @@
 
         <!--Navigation on left-->
         <div class="flex items-center mr-0 ml-auto max-md:hidden">
-            <div class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
+            <div
+                class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
                 <a href="/user/notes/upload" class="inline-block relative p-1">Upload</a>
             </div>
-            <div class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
+            <div
+                class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
                 <a href="/user/notes" class="inline-block relative p-1">MyNotes</a>
             </div>
-            <div class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
+            <div
+                class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
                 <a href="/user/notes/bookmark" class="inline-block relative p-1">Saved</a>
             </div>
         </div>
@@ -103,18 +109,15 @@
         <!--SearchBar-->
         <div class="flex">
             <div class="p-3 max-md:hidden">
-                <input
-                    id="search-input"
-                    type="text"
-                    class="border-greenwhitey rounded-lg p-1"
-                    placeholder="Search..."
-                />
+                <input id="search-input" type="text" class="border-greenwhitey rounded-lg p-1"
+                    placeholder="Search..." />
                 <button class="pl-1" onclick="searchByName()">
                     <img class="w-4" src="/img/search.png" />
                 </button>
             </div>
             <a class="p-2 flex items-center" href="/user/profile">
-                <img id="profile-picture" src="/api/account/profile-photo" class="w-11 h-11 rounded-full border-[1px] border-gray-300" />
+                <img id="profile-picture" src="/api/account/profile-photo"
+                    class="w-11 h-11 rounded-full border-[1px] border-gray-300" />
             </a>
         </div>
     </header>
@@ -122,24 +125,23 @@
 
     <div class="pdf-container mt-20">
         <div class="judul">
-            <h2 id="title" class="text-3xl font-bold text-gray-800 mt-20">Introduction to OOP</h2>
-            <h4 id="major" class="text-lg text-gray-600 mt-2">Computer Science</h4>
-            
+            <h2 class="text-3xl font-bold text-gray-800 mt-20" th:text="${note.title}">Judul Catatan</h2>
+            <h4 class="text-lg text-gray-600 mt-2" th:text="${note.major}">Jurusan</h4>
+
+
             <!-- Bookmark Button -->
-            <button 
-                id="bookmark-button" 
+            <button id="bookmark-button"
                 class="bookmark-button mt-4 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                onclick="toggleBookmark(window.noteID || new URLSearchParams(window.location.search).get('noteID'))"
-            >
+                onclick="toggleBookmark(window.noteID || new URLSearchParams(window.location.search).get('noteID'))">
                 <i class="far fa-bookmark"></i> Save
             </button>
-        </div>     
-        
+        </div>
+
         <div class="line"></div>
-        
+
         <!-- PDF Viewer -->
         <iframe th:src="${'/api/note/getfile?noteID='+ noteID}"></iframe>
-        
+
         <!-- Rating Section -->
         <div class="star">
             <h2 class="text-xl font-semibold mb-4">Overall Rating: Loading...</h2>
@@ -158,7 +160,8 @@
     <script th:inline="javascript">
         window.noteID = /*[[${noteID}]]*/ null;
     </script>
-    
+
     <script src="/js/note.js"></script>
 </body>
+
 </html>

@@ -1,35 +1,46 @@
 package com.kelompok5.open_notepad;
+
+import com.kelompok5.open_notepad.DAO.BookmarkDAO;
+import com.kelompok5.open_notepad.DAO.NoteDAO;
+import com.kelompok5.open_notepad.entity.Note;
+import com.kelompok5.open_notepad.entity.User;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
-public class PageController{
+public class PageController {
+    @Autowired
+    private BookmarkDAO bookmarkDAO;
 
     private final Security security;
+    private final NoteDAO noteDAO;
 
-    public PageController(Security security) {
+    public PageController(Security security, NoteDAO noteDAO) {
         this.security = security;
+        this.noteDAO = noteDAO;
     }
 
     @GetMapping("/")
     public String home(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         return "index";
     }
+
     @GetMapping("/login")
     public String login(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (security.isSessionValid(session, request)) {
-            // If logged in, redirect to the main page
             return "redirect:/";
         }
         return "authPage";
@@ -37,9 +48,7 @@ public class PageController{
 
     @GetMapping("/user/profile")
     public String profile(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         return "profile";
@@ -47,9 +56,7 @@ public class PageController{
 
     @GetMapping("/user/notes/upload")
     public String uploadNotes(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         return "upload";
@@ -57,55 +64,58 @@ public class PageController{
 
     @GetMapping("/user/notes")
     public String myNotes(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         return "myNote";
     }
 
-    @GetMapping("/user/notes/saved")
-    public String savedNotes(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
+    @GetMapping("/user/notes/bookmark")
+    public String savedNotes(HttpSession session, HttpServletRequest request, Model model) {
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Map<String, Object>> notes = bookmarkDAO.getBookmarkedNotes(user.getUsername());
+        model.addAttribute("savedNotes", notes);
         return "savedNotes";
     }
 
     @GetMapping("/user/profile/edit")
     public String editProfile(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         return "editProfile";
     }
 
     @GetMapping("/note/view/{id}")
-    public String notesPage(HttpSession session, HttpServletRequest request, @PathVariable("id") String noteId, Model model) {
-        // Check if the user is logged in
+    public String notesPage(HttpSession session, HttpServletRequest request, @PathVariable("id") int id, Model model) {
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
-        model.addAttribute("noteID", noteId);
-        // Add any addition
+
+        Note note = noteDAO.getFromDatabase(id);
+        if (note == null) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("noteID", id);
+        model.addAttribute("note", note);
         return "note";
     }
 
     @GetMapping("/admin")
     public String adminPage(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         if (!security.isAdmin(session)) {
-            // If the user is not an admin, redirect to the main page
             return "redirect:/";
         }
         return "admin";
@@ -113,13 +123,10 @@ public class PageController{
 
     @GetMapping("/admin/profile")
     public String adminProfile(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         if (!security.isAdmin(session)) {
-            // If the user is not an admin, redirect to the main page
             return "redirect:/";
         }
         return "adminProfile";
@@ -127,16 +134,12 @@ public class PageController{
 
     @GetMapping("/admin/profile/edit")
     public String adminEditProfile(HttpSession session, HttpServletRequest request) {
-        // Check if the user is logged in
         if (!security.isSessionValid(session, request)) {
-            // If not logged in, redirect to the main page
             return "redirect:/login";
         }
         if (!security.isAdmin(session)) {
-            // If the user is not an admin, redirect to the main page
             return "redirect:/";
         }
         return "editAdminProfile";
     }
-    
 }

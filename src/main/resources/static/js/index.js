@@ -225,12 +225,8 @@ function loadNotes() {
     })
     .then((data) => {
       console.log("Data diterima dari getAllnotes:", data)
-
-      // Simpan data ke variabel global
       allNotesData = data
       currentDisplayData = data
-
-      // Tampilkan data
       displayNotes(data)
     })
     .catch((error) => {

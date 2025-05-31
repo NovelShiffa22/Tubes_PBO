@@ -83,6 +83,7 @@ public class AccountController {
         // Login function
         String sql = "SELECT isAdmin FROM Accounts WHERE username = ?";
         boolean isAdmin;
+        Object userOrAdmin = null;
         try {
             isAdmin = jdbcTemplate.queryForObject(sql, new Object[] { username }, (rs, rowNum) -> {
                 return rs.getBoolean("isAdmin");
@@ -103,6 +104,7 @@ public class AccountController {
                 // If the password does not match, return an error message
                 return ResponseEntity.badRequest().body(Map.of("message", "invalid password"));
             }
+            userOrAdmin = admin;
         } else {
             User user = userDAO.getFromDatabase(username);
             if (user == null) {
@@ -114,10 +116,12 @@ public class AccountController {
                 // If the password does not match, return an error message
                 return ResponseEntity.badRequest().body(Map.of("message", "invalid password"));
             }
+            userOrAdmin = user;
         }
         // if login success, set the session attribute
         session.setMaxInactiveInterval(60 * 60 * 24);
         session.setAttribute("username", username);
+        session.setAttribute("user", userOrAdmin); // set to user or admin object
         // upload session to database
         String sessionID = session.getId();
         session.setMaxInactiveInterval(60 * 60 * 24); // 1 day

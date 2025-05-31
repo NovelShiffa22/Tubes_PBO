@@ -18,3 +18,14 @@ spring:
     username: ${SQLusername}
     password: ${SQLpassword}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  port: 8081
+
+

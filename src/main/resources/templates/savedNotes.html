@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Saved Notes</title>
+    <link rel="stylesheet" href="/css/output.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <header class="fixed shadow-lg flex top-0  bg-ijomuda w-full justify-between z-30">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        </style>
+        <div class="flex items-stretch">
+            <div class="py-2 px-4 max-md:hover:bg-ijotaik">
+                <a class="" href="/">
+                    <img class="w-[125px]" src="/img/logo.png" />
+                </a>
+            </div>
+        </div>
+
+        <!--Navigation on left-->
+        <div class="flex items-center mr-0 ml-auto max-md:hidden">
+            <div
+                class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
+                <a href="/user/notes/upload" class="inline-block relative p-1">Upload</a>
+            </div>
+            <div
+                class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
+                <a href="/user/notes" class="inline-block relative p-1">MyNotes</a>
+            </div>
+            <div
+                class="p-3 font-inter font-semibold hover:bg-ijomudagelap border-b-[2px] border-ijomuda hover:border-black transition-all duration-300 ease-in-out">
+                <a href="/user/notes/bookmark" class="inline-block relative p-1">Saved</a>
+            </div>
+        </div>
+
+        <!--SearchBar-->
+        <div class="flex">
+            <div class="p-3 max-md:hidden">
+                <input id="search-input" type="text" class="border-greenwhitey rounded-lg p-1"
+                    placeholder="Search..." />
+                <button id="search-button" class="pl-1">
+                    <img class="w-4" src="/img/search.png" />
+                </button>
+
+            </div>
+            <a class="p-2 flex items-center" href="/user/profile">
+                <img id="profile-picture" src="/api/account/profile-photo"
+                    class="w-11 h-11 rounded-full border-[1px] border-gray-300" />
+                <div class="border-sky-500"></div>
+            </a>
+        </div>
+    </header>
+    <script src="/js/navbar.js"></script>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 pt-[8rem] pb-12">
+        >
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Saved Notes</h2>
+
+        <div th:if="${not #lists.isEmpty(savedNotes)}"
+            class="py-5 pt-20 max-w-[90%] mx-auto md:mr-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full box-border">
+            <div th:each="note : ${savedNotes}"
+                class="flex h-[250px] flex-col text-left bg-white px-5 rounded-lg shadow-md transition-all duration-200 hover:translate-y-[-4px] hover:shadow-lg"
+                th:onclick="'window.location.href=\'/note/view/' + ${note.id} + '\''" style="cursor: pointer;">
+                <h3 class="text-2xl m-0 pt-2" th:text="${note.name}">Judul Catatan</h3>
+                <p class="font-semibold text-base text-[#555]" th:text="${note.course} + ' - ' + ${note.major}">Course -
+                    Major</p>
+                <span class="font-extralight text-sm text-[#555] mb-2.5 pt-2" th:text="${note.username}">Username</span>
+                <div class="h-full mt-2.5 pb-5 flex flex-col justify-end items-baseline text-sm text-[#444]">
+                    <div class="flex justify-center items-center">
+                        <img class="h-[15px] w-[15px] mr-1" src="/img/star.png" alt="Rating">
+                        <p th:text="${note.rating} + '/5.0'">0/5.0</p>
+                    </div>
+                    <div class="flex justify-center items-center">
+                        <img class="h-[15px] w-[15px] mr-1" src="/img/view.png" alt="Views">
+                        <p th:text="${note.views} + ' Views'">0 Views</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- If empty -->
+        <div th:if="${#lists.isEmpty(savedNotes)}" class="text-gray-500 mt-4">
+            Tidak ada catatan yang disimpan.
+        </div>
+    </main>
+
+
+    <script src="/js/navbar.js"></script>
+</body>
+
+</html>
